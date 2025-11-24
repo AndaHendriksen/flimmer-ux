@@ -5,37 +5,62 @@
 
 import { Platform } from 'react-native';
 
-const tintColorLight = '#0a7ea4';
-const tintColorDark = '#fff';
-
+// Semantic color system for light/dark mode. Extend as needed.
+// Keep keys stable for existing hooks (useThemeColor expects matching keys in both modes).
 export const Colors = {
   light: {
-    text: '#11181C',
-    background: '#fff',
-    tint: tintColorLight,
-    icon: '#687076',
-    tabIconDefault: '#687076',
-    tabIconSelected: tintColorLight,
+    // Core
+    background: '#FFFFFF',
+    text: '#0D0F11',
+    tint: '#FF7A00',
+    icon: '#4A4F55',
+    border: '#E4E6EA',
+
+    // Surfaces
+    surface: '#FFFFFF',
+    surfaceAlt: '#F5F6F9',
+
+    // Cards (section specific)
+    bunkenCard: '#FCEFA1', // pale warm yellow
+    challengesArea: '#D8C5FF', // lilac background behind horizontal list
+    challengeInner: '#FFFFFF',
+    moodMovement: '#FFB3AF', // pink
+    moodCreative: '#E3CCFF', // purple
+    moodLearning: '#C7DCFF', // light blue
+    moodPranks: '#BBF7C5', // light green
+
+    // Tabs
+    tabIconDefault: '#8A8F96',
+    tabIconSelected: '#FF7A00',
   },
   dark: {
-    text: '#ECEDEE',
-    background: '#151718',
-    tint: tintColorDark,
-    icon: '#9BA1A6',
-    tabIconDefault: '#9BA1A6',
-    tabIconSelected: tintColorDark,
+    background: '#121315',
+    text: '#F3F5F6',
+    tint: '#FF9A33',
+    icon: '#C2C7CC',
+    border: '#2A2D31',
+
+    surface: '#1C1E21',
+    surfaceAlt: '#25282C',
+
+    bunkenCard: '#5B4F12',
+    challengesArea: '#3F2F63',
+    challengeInner: '#25282C',
+    moodMovement: '#5A2F2D',
+    moodCreative: '#4C3963',
+    moodLearning: '#233A55',
+    moodPranks: '#1F5130',
+
+    tabIconDefault: '#7A8087',
+    tabIconSelected: '#FF9A33',
   },
 };
 
 export const Fonts = Platform.select({
   ios: {
-    /** iOS `UIFontDescriptorSystemDesignDefault` */
     sans: 'system-ui',
-    /** iOS `UIFontDescriptorSystemDesignSerif` */
     serif: 'ui-serif',
-    /** iOS `UIFontDescriptorSystemDesignRounded` */
     rounded: 'ui-rounded',
-    /** iOS `UIFontDescriptorSystemDesignMonospaced` */
     mono: 'ui-monospace',
   },
   default: {
@@ -51,3 +76,5 @@ export const Fonts = Platform.select({
     mono: "SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
   },
 });
+
+export type AppColorName = keyof typeof Colors.light & keyof typeof Colors.dark;
