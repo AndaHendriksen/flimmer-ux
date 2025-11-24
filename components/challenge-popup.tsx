@@ -1,4 +1,5 @@
 import { Image } from 'expo-image';
+import { router } from 'expo-router';
 import React, { useCallback, useEffect, useImperativeHandle, useLayoutEffect, useMemo, useState } from 'react';
 import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
@@ -167,7 +168,7 @@ const ChallengePopup = React.forwardRef<ChallengePopupHandle, ChallengePopupProp
                 current={current}
                 setHeaderPeekHeight={(h) => setHeaderPeekHeight(h)}
               />
-              <PopupContent onPrimary={onPrimary} />
+              <PopupContent />
             </View>
           </Pressable>
         </Animated.View>
@@ -227,10 +228,14 @@ const PopupHeader: React.FC<{
   </View>
 );
 
-const PopupContent: React.FC<{ onPrimary?: () => void }> = ({ onPrimary }) => (
+const PopupContent: React.FC = () => (
   <View style={styles.content}>
     <Text style={styles.headline}>Hvor mange gange kan du sjippe?</Text>
-    <Pressable onPress={() => (onPrimary && onPrimary())} style={styles.cta}>
+    <Pressable
+      onPress={() => router.push('/camera')}
+      style={styles.cta}
+      testID="popup-primary-button"
+    >
       <Text style={styles.ctaText}>Prøv!</Text>
       <View style={styles.ctaIcon}>
         <Image

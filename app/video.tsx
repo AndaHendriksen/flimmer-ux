@@ -3,7 +3,7 @@ import { useVideoPlayer, VideoView } from 'expo-video';
 import React, { useEffect, useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-export default function ChallengeScreen() {
+export default function VideoScreen() {
 	const sheetRef = useRef<ChallengePopupHandle>(null);
 
 	useEffect(() => {
@@ -23,7 +23,7 @@ export default function ChallengeScreen() {
 
 	return (
 		<View style={styles.container}>
-      <VideoView
+      		<VideoView
 				contentFit='cover'
 				style={styles.video}
 				player={player}

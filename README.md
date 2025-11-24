@@ -1,7 +1,33 @@
 # Steps for at se video + hook
 
-Fra startsiden klik "Bevægelse"
+- Kun mobil view er blevet lavet
+- Fra startsiden klik "Bevægelse"
 
+# Octopus svar 🐙
+
+## Database schema
+
+- userChallengeSubmissionId
+- challengeRelationId --> videoRelationId, challengerUserRelationId
+- userRelationId
+- fileRelationId
+- message
+- decorationDesignId
+- createdDatetime
+
+## Safety logic
+
+- Ingen offentlige billeder
+- Kun mellem venner
+- Du kan kun blive venner ved at scanne en roterende QR kode (tænk MitId) på din vens mobil.
+
+### Billed-upload
+1. Der laves en blurred version af billedet
+2. Det originale billede bliver encrypted med en secret key
+3. Billederne uploades
+4. Venner får vist blurred billeder
+5. Venner skal klikke på billedet for at downloade det encryptede billede
+6. Decryption secret key bliver delt for at decrypte billedet på deres device
 
 # Welcome to your Expo app 👋
 

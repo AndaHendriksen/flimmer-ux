@@ -1,5 +1,5 @@
 import { Image } from 'expo-image';
-import { Link, router } from 'expo-router';
+import { Link } from 'expo-router';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
@@ -96,8 +96,8 @@ export default function HomeScreen() {
             );
             if (m.id === 'movement') {
               return (
-                <Link key={m.id} href="/challenge" asChild>
-                  <Pressable accessibilityRole="button" accessibilityLabel="Åbn udfordring for bevægelse" onPress={() => router.push('/challenge')}>
+                <Link key={m.id} href="/video" asChild>
+                  <Pressable key={m.id} accessibilityRole="button" accessibilityLabel="Åbn udfordring for bevægelse">
                     {content}
                   </Pressable>
                 </Link>
