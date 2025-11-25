@@ -14,6 +14,31 @@ import Animated, {
 } from 'react-native-reanimated';
 
 export default function HomeScreen() {
+  return (
+    <ScrollView className='p-4'>
+      <ThePileSection />
+      <ChallengesSection />
+      <MoodSection />
+    </ScrollView>
+  );
+}
+
+function ThePileSection() {
+  return (
+    <Section>
+      <ThemedText type="title" style={styles.sectionTitle}>Bunken</ThemedText>
+      <View className='bg-yellow-100 rounded-3xl p-2 flex flex-row items-center'>
+        <Text className='ml-2 flex-1 text-lg font-bold'>{bunkenStats.count} udfordringer</Text>
+        <Image
+          source={require('@/assets/images/bunken-stack.png')}
+          className='h-24 w-24'
+        />
+      </View>
+    </Section>
+  )
+}
+
+function ChallengesSection() {
   const scale = useSharedValue(0.90);
   const rotate = useSharedValue('20deg');
   const bottom = useSharedValue(-100);
@@ -24,93 +49,79 @@ export default function HomeScreen() {
     bottom.value = withTiming(-30, { duration: 1000, easing: Easing.bezier(0.5, 0.01, 0, 1) });
   }, []);
 
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value}, { rotate: rotate.value }],
-  }));
-
   const parentAnimatedStyle = useAnimatedStyle(() => ({
     bottom: bottom.value,
     position: 'absolute',
     right: 0,
     height: '100%',
   }));
+  
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value}, { rotate: rotate.value }],
+  }));
 
   return (
-    <ScrollView className='p-4'>
-      {/* Bunken Section */}
-      <Section>
-        <ThemedText type="title" style={styles.sectionTitle}>Bunken</ThemedText>
-        <View className='bg-yellow-100 rounded-3xl p-2 flex flex-row items-center'>
-          <Text className='ml-2 flex-1 text-lg font-bold'>{bunkenStats.count} udfordringer</Text>
-          <Image
-            source={require('@/assets/images/bunken-stack.png')}
-            className='h-24 w-24'
-          />
+    <Section>
+      <ThemedText type="title" style={styles.sectionTitle}>Udfordringer</ThemedText>
+      <View className='bg-purple-100 p-4 rounded-3xl w-full'>
+        <View className='relative h-24'>
+          <View className='absolute -bottom-16 left-[50%] -translate-x-1/2 w-3/4 z-10'>
+            <View className='w-full pb-[100%] relative overflow-hidden'>
+              <Animated.View style={[parentAnimatedStyle]} >
+                <Animated.Image source={require('@/assets/images/challenge-painting.png')} className='w-full h-full' style={[animatedStyle]} />
+              </Animated.View>
+            </View>
+          </View>
         </View>
-      </Section>
-
-      {/* Udfordringer Section */}
-      <View className='mb-4'>
-        <ThemedText type="title" style={styles.sectionTitle}>Udfordringer</ThemedText>
+        <View className='bg-white shadow-xl shadow-purple-300 rounded-2xl p-4 flex flex-row gap-4 items-center w-full'>
+          <View className='flex-1 grow'>
+            <Text className='text-lg font-bold'>Kunst udfordring!</Text>
+            <Text className='opacity-50'>Anda har udfordret dig</Text>
+          </View>
+          <View className='h-12 w-12 bg-orange-300 rounded-full'>
+              <Image
+                source={require('@/assets/images/arrow-white.png')}
+                style={{ width: 23, height: 16, margin: 'auto' }}
+              />
+          </View>
+        </View>
       </View>
+    </Section>
+  )
+}
 
-      <View className='mb-12'>
-        <View className='bg-purple-100 p-4 rounded-3xl w-full'>
-          <View className='relative h-24'>
-            <View className='absolute -bottom-16 left-[50%] -translate-x-1/2 w-3/4 z-10'>
-              <View className='w-full pb-[100%] relative overflow-hidden'>
-                <Animated.View style={[parentAnimatedStyle]} >
-                  <Animated.Image source={require('@/assets/images/challenge-painting.png')} className='w-full h-full' style={[animatedStyle]} />
-                </Animated.View>
-              </View>
+function MoodSection() {
+  return (
+    <Section>
+      <ThemedText type="title" style={styles.sectionTitle}>Hvad har du lyst til?</ThemedText>
+      <View style={{ gap: 16 }}>
+        {moodCategories.map((m: MoodCategory) => {
+          const content = (
+            <View className='bg-yellow-100 rounded-3xl p-2 flex flex-row items-center' style={{ backgroundColor: m.colorLight }}>
+              <Text className='ml-2 flex-1 text-lg font-bold'>{m.label}</Text>
+              <Image
+                source={m.image}
+                className='h-24 w-24'
+              />
             </View>
-          </View>
-          <View className='bg-white shadow-xl shadow-purple-300 rounded-2xl p-4 flex flex-row gap-4 items-center w-full'>
-            <View className='flex-1 grow'>
-              <Text className='text-lg font-bold'>Kunst udfordring!</Text>
-              <Text className='opacity-50'>Anda har udfordret dig</Text>
-            </View>
-            <View className='h-12 w-12 bg-orange-300 rounded-full'>
-                <Image
-                  source={require('@/assets/images/arrow-white.png')}
-                  style={{ width: 23, height: 16, margin: 'auto' }}
-                />
-            </View>
-          </View>
-        </View>
-        </View>
-
-      {/* Humør Section */}
-      <Section>
-        <ThemedText type="title" style={styles.sectionTitle}>Hvad har du lyst til?</ThemedText>
-        <View style={{ gap: 16 }}>
-          {moodCategories.map((m: MoodCategory) => {
-            const content = (
-              <View className='bg-yellow-100 rounded-3xl p-2 flex flex-row items-center' style={{ backgroundColor: m.colorLight }}>
-                <Text className='ml-2 flex-1 text-lg font-bold'>{m.label}</Text>
-                <Image
-                  source={m.image}
-                  className='h-24 w-24'
-                />
-              </View>
-            );
-            if (m.id === 'movement') {
-              return (
-                <Link key={m.id} href="/video" asChild>
-                  <Pressable key={m.id} accessibilityRole="button" accessibilityLabel="Åbn udfordring for bevægelse">
-                    {content}
-                  </Pressable>
-                </Link>
-              );
-            }
+          );
+          if (m.id === 'movement') {
             return (
-              <View key={m.id}>{content}</View>
+              <Link key={m.id} href="/video-and-camera" asChild>
+                <Pressable key={m.id} accessibilityRole="button" accessibilityLabel="Åbn udfordring for bevægelse">
+                  {content}
+                </Pressable>
+              </Link>
             );
-          })}
-        </View>
-      </Section>
-    </ScrollView>
-  );
+          }
+          return (
+            <View key={m.id}>{content}</View>
+          );
+        })}
+      </View>
+    </Section>
+  )
 }
 
 function Section({ children }: { children: React.ReactNode }) {

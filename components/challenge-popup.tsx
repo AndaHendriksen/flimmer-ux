@@ -1,5 +1,4 @@
 import { Image } from 'expo-image';
-import { router } from 'expo-router';
 import React, { useCallback, useEffect, useImperativeHandle, useLayoutEffect, useMemo, useState } from 'react';
 import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
@@ -7,8 +6,6 @@ import type { SharedValue } from 'react-native-reanimated';
 import Animated, {
   Extrapolation,
   interpolate,
-  runOnJS,
-  useAnimatedReaction,
   useAnimatedStyle,
   useSharedValue,
   withSpring
@@ -22,7 +19,7 @@ export type ChallengePopupSnap = 'hidden' | 'peek' | 'expanded';
 
 export type ChallengePopupProps = {
   onClose?: () => void;
-  onPrimary?: () => void;
+  onPrimaryAction?: () => void;
 };
 
 export type ChallengePopupHandle = {
@@ -31,7 +28,7 @@ export type ChallengePopupHandle = {
 
 const ChallengePopup = React.forwardRef<ChallengePopupHandle, ChallengePopupProps>(function ChallengePopup({
   onClose,
-  onPrimary,
+  onPrimaryAction,
 }: ChallengePopupProps, ref) {
   const [measuredHeight, setMeasuredHeight] = useState(SCREEN_HEIGHT);
   const [headerPeekHeight, setHeaderPeekHeight] = useState<number>(1000);
@@ -72,16 +69,6 @@ const ChallengePopup = React.forwardRef<ChallengePopupHandle, ChallengePopupProp
   useEffect(() => {
     translateY.value = snapPoints[current.value];
   }, [snapPoints, current, translateY]);
-
-  // Bridge shared value 'current' to React state to control overlay pointer events
-  useAnimatedReaction(
-    () => current.value,
-    (cur, prev) => {
-      if (cur !== prev) {
-        runOnJS(setOverlayActive)(cur !== 'hidden');
-      }
-    }
-  );
 
   const pan = Gesture.Pan()
     .onStart(() => { startY.value = translateY.value; })
@@ -145,8 +132,14 @@ const ChallengePopup = React.forwardRef<ChallengePopupHandle, ChallengePopupProp
     if (current.value === 'peek') snapTo('expanded');
   }, [snapTo, current]);
 
+  const handlePrimaryAction = useCallback(() => {
+    snapTo('hidden');
+    if (onClose) scheduleOnRN(onClose);
+    if (onPrimaryAction) scheduleOnRN(onPrimaryAction);
+  }, [snapTo, onClose, onPrimaryAction]);
+
   return (
-    <View pointerEvents="box-none" style={StyleSheet.absoluteFill}>
+    <View pointerEvents="box-none" style={[StyleSheet.absoluteFill, { zIndex: 1000 }]}>
       <DimOverlay
         ready={ready}
         animatedStyle={overlayStyle}
@@ -168,7 +161,7 @@ const ChallengePopup = React.forwardRef<ChallengePopupHandle, ChallengePopupProp
                 current={current}
                 setHeaderPeekHeight={(h) => setHeaderPeekHeight(h)}
               />
-              <PopupContent />
+              <PopupContent onPrimaryAction={handlePrimaryAction} />
             </View>
           </Pressable>
         </Animated.View>
@@ -215,7 +208,6 @@ const PopupHeader: React.FC<{
 }> = ({ onClose, snapTo, current, setHeaderPeekHeight }) => (
   <View
     onLayout={(e) => setHeaderPeekHeight(e.nativeEvent.layout.height)}
-    style={styles.peekHeader}
   >
     <View style={styles.headerRow}>
       <Text style={styles.title}>Udfordring!</Text>
@@ -228,23 +220,25 @@ const PopupHeader: React.FC<{
   </View>
 );
 
-const PopupContent: React.FC = () => (
+const PopupContent: React.FC<{ onPrimaryAction?: () => void }> = ({ onPrimaryAction }) => (
   <View style={styles.content}>
     <Text style={styles.headline}>Hvor mange gange kan du sjippe?</Text>
     <Pressable
-      onPress={() => router.push('/camera')}
+      onPress={() => onPrimaryAction && onPrimaryAction()}
       style={styles.cta}
+      className='bg-purple-300 shadow-md shadow-blue-600/40'
       testID="popup-primary-button"
     >
-      <Text style={styles.ctaText}>Prøv!</Text>
-      <View style={styles.ctaIcon}>
+      <Text style={styles.ctaText}>
+        Lad mig prøve!
+      </Text>
+      <View style={styles.ctaIcon} className='bg-blue-400'>
         <Image
           source={require('../assets/images/arrow-white.png')}
           contentFit="contain"
           contentPosition="center"
-          style={{ width: 16, height: 16 }}
+          style={{ width: 22, height: 22 }}
         />
-        {/* <Text style={styles.ctaIconText}>→</Text> */}
       </View>
     </Pressable>
   </View>
@@ -294,10 +288,6 @@ const styles = StyleSheet.create({
 		width: '100%',
 		height: '100%',
 	},
-  peekHeader: {
-    // isolates the visible header portion for peek state
-    // no extra styles needed now but reserved for future (e.g., gradient mask)
-  },
   content: { flex: 1 },
   headerRow: {
 		paddingTop: 16,
@@ -310,9 +300,8 @@ const styles = StyleSheet.create({
   },
   title: { fontSize: 18, fontWeight: '700' },
   close: { fontSize: 22, lineHeight: 22, paddingHorizontal: 8, position: 'absolute', right: 0, top: 0 },
-  headline: { fontSize: 20, fontWeight: '800', marginTop: 32, marginBottom: 56 },
+  headline: { fontSize: 28, fontWeight: '800', marginTop: 32, marginBottom: 56 },
   cta: {
-    backgroundColor: '#ffb3ab',
     borderRadius: 16,
     paddingVertical: 16,
     paddingHorizontal: 20,
@@ -326,7 +315,6 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#4a8cff',
     alignItems: 'center',
     justifyContent: 'center',
   },

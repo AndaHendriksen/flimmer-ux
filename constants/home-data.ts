@@ -19,9 +19,8 @@ export const challenges: Challenge[] = [
     id: 'painting',
     title: 'Kunst udfordring!',
     subtitle: 'Anda har udfordret dig',
-    image: require('@/assets/images/challenge-painting.png'), // TODO: add this asset
+    image: require('@/assets/images/challenge-painting.png'),
   },
-  // Add more challenges here
 ];
 
 export type MoodCategory = {
@@ -36,29 +35,22 @@ export const moodCategories: MoodCategory[] = [
   {
     id: 'movement',
     label: 'Bevægelse',
-    image: require('@/assets/images/mood-movement.png'), // TODO: add this asset
+    image: require('@/assets/images/mood-movement.png'),
     colorLight: '#FFB3AF',
     colorDark: '#5A2F2D',
   },
   {
     id: 'creative',
     label: 'Krea og byg',
-    image: require('@/assets/images/mood-creative.png'), // TODO: add this asset
+    image: require('@/assets/images/mood-creative.png'),
     colorLight: '#E3CCFF',
     colorDark: '#4C3963',
   },
   {
     id: 'learning',
     label: 'Læring, quiz og gæt',
-    image: require('@/assets/images/mood-learning.png'), // TODO: add this asset
+    image: require('@/assets/images/mood-learning.png'),
     colorLight: '#C7DCFF',
     colorDark: '#233A55',
   },
-  // {
-  //   id: 'pranks',
-  //   label: 'Pranks og sjov',
-  //   image: require('@/assets/images/mood-pranks.png'), // TODO: add this asset
-  //   colorLight: '#BBF7C5',
-  //   colorDark: '#1F5130',
-  // },
 ];

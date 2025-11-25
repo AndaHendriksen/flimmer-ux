@@ -19,11 +19,9 @@ export default function RootLayout() {
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <Stack>
           <Stack.Screen name="index" options={{ headerShown: false }} />
-          <Stack.Screen name="video" options={{ headerShown: false }} />
           <Stack.Screen name="uploading" options={{ headerShown: false }} />
-          <Stack.Screen name="camera" options={{ headerShown: false }} />
+          <Stack.Screen name="video-and-camera" options={{ headerShown: false }} />
         </Stack>
-        {/* <StatusBar style="auto" /> */}
       </ThemeProvider>
     </GestureHandlerRootView>
   );
